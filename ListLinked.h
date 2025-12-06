@@ -1,3 +1,5 @@
+#ifndef LISTLINKED_H
+#define LISTLINKED_H
 #include <ostream>
 #include <stdexcept>
 #include <iostream>
@@ -129,3 +131,4 @@ class ListLinked :public List<T>{
 		}
 
 };
+#endif
