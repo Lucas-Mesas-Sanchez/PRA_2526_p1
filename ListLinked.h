@@ -1,6 +1,6 @@
 #include <ostream>
 #include <stdexcept>
-
+#include <iostream>
 #include "Node.h"
 #include "List.h"
 template<typename T>
@@ -12,16 +12,16 @@ class ListLinked :public List<T>{
 		//Metodos de la clase List
 		T get(int pos) override{
 			Node<T>* aux = first;
-           		 if (pos <= size() && pos > 0) {
+           		 if (pos < size() && pos >= 0) {
           	      int i=0;
               		  while (i < pos) {
                		     i++;
                		     aux = aux->next;
                		 }
-               		 return aux -> data;
+               		 return aux->data;
            		 }
          		else{
-          		      throw std::out_of_range("Posicion invalida en el intervalo [0,size()-1[");
+          		      throw std::out_of_range("Posicion invalida en el intervalo [0,size()-1[ al ejectuar get()");
           		  }
 		}
 		int size() override {
@@ -45,29 +45,30 @@ class ListLinked :public List<T>{
           	 }
 
 		void insert (int pos, T element) override {
-		if (pos > size() || pos < 0) {
-			throw std::out_of_range("Posicion invalida en el intervalo [0,size()[");
-		}
-			if (pos == 0) {
-           		 first = new Node<T>(element,first);
-         		   n++;
-       			 }
-        		else {
-          			 Node<T>* prev = nullptr;
-  	        		 Node<T>* aux = first;
-        	  		 int i = 0;
-         		 	 while (aux->next != nullptr && i < pos) {
-		 			 prev = aux;                                 
-               				 aux= aux->next;                             
-              				  i++;
-          			 }
-         			if (i == pos) {
-					prev -> next = new Node<T> (element,aux);
-               				n++;
-           			}
-        		}
+			if (pos <= size() && pos >= 0) {
+				if (pos == 0) {
+					first = new Node<T>(element,first);
+					n++;
+					}
+					else {
+						Node<T>* prev = nullptr;
+						Node<T>* aux = first;
+						int i = 0;
+						while (aux != nullptr && i < pos) {
+						prev = aux;
+								aux= aux->next;
+								i++;
+						}
+						if (i == pos) {
+						prev -> next = new Node<T> (element,aux);
+								n++;
+						}
+					}
+			}
+			else throw std::out_of_range("Posicion inválida en el intervalo [0,size()[");
 		}
 		void append(T element) override {
+		
 			insert(n,element);
 		}
 		void prepend(T element) override {
@@ -75,7 +76,7 @@ class ListLinked :public List<T>{
 		}
 		T remove(int pos) override {
 		int cont = 0 ;
-		int element;
+		T element;
         	Node<T>* aux = first;
        		Node<T>* prevAux = nullptr;
 		if (pos < 0 || pos > n-1) {
@@ -112,18 +113,17 @@ class ListLinked :public List<T>{
 			Node<T>* aux=first->next;
 			delete[] first;
 			first = aux;
-			delete[] aux;
 			}
-		delete[] first;
+
 		}
 
 		T operator[](int pos){
 			return get(pos);
 		}
-		friend std::ostream& operator<<(std::ostream &out, const ListLinked<T> &list) {
+		friend std::ostream& operator<<(std::ostream &out, ListLinked<T> &list) {
 		out<<"List --> [ ";
                         for (unsigned int i=0 ; i< list.n ; i++){
-                                out<<list[i]<<" ";
+                                out<<list.get(i)<<" ";
                         }out<<"]\n";
                 return out;
 		}
